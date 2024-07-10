@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .row{
+            background-color: green;
+            padding: 20px;
+            width:500px;
+            margin:100px auto ;
+            border-radius: 20px;
+        }
+        form {
+            margin: 30px auto;
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+        #user,#pass {
+            margin-bottom: 10px;
+            height: 35px;
+            border-radius: 10px;
+            border: none;
+        }
+        #btn{
+            height: 35px;
+            width: 100px;
+            margin: auto;
+            margin-bottom: 10px;
+        }
+        a{
+            text-decoration: none;
+            font-size: large;
+            color: white;
+            margin: auto;
+        }
+        h1{
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h1><center>Login</center></h1>
+            <form action="/auth/signin" method = "POST">
+                <input type="text" id="user" name="username" placeholder="Enter the username"/>
+                <input type="text" id="pass" name="password" placeholder="Enter the password"/>
+                <input type="submit" id="btn" value="submit"/>
+                <a href="/auth/signup" >New user?</a>
+                <a href="/auth/forgot-password" >Forgot password?</a>
+                
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

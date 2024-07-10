@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <%- include("navbar.ejs")%>
+            <div id="products-container" class="row row-cols-1 row-cols-md-3 g-4 mt-5">
+                <% for(var i=0;i<products.length;i++) { %>
+                    <div class="col product-item" id="product-<%= products[i]._id %>">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<%= products[i].pic %>" class="card-img-top" style="height: 20rem" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= products[i].name %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= products[i].description %>
+                                </p>
+                                <p class="card-text">
+                                    <%= products[i].price %>
+                                </p>
+                                <button class="btn btn-primary" onclick="addToCart('<%= products[i]._id %>')">
+                                    Add to cart
+                                </button>
+                                <button class="btn btn-info" onclick="showProductDetails('<%= products[i]._id %>')">
+                                    More details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+            </div>
+            <% if (totalPages> 1) { %>
+                <div class="text-center mt-4">
+                    <button id="load-more-btn" class="btn btn-warning">Load More</button>
+                </div>
+                <% } %>
+    </div>
+    <%- include("modal.ejs") %>
+        <script>
+            let currentPage = 1;
+            const totalPages = <%= totalPages %>;
+            // console.log(totalPages)
+
+            const addToCart = (productId) => {
+                fetch("/product/add-to-cart", {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId })
+                })
+                    .then((res) => {
+                        if (res.status === 200) {
+                            alert("Product added to cart successfully")
+                        }
+                        else {
+                            alert("Failed to add product to cart");
+                        }
+                    })
+                    .catch((err) => {
+                        console.log("error occured in adding to cart")
+                    })
+            }
+
+            const loadMoreProducts = () => {
+                currentPage++;
+                fetch(`/products?page=${currentPage}`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const productsContainer = document.getElementById('products-container');
+                        data.products.forEach(product => {
+                            const productElement = document.createElement('div');
+                            productElement.className = 'col product-item';
+                            productElement.id = `product-${product._id}`;
+                            productElement.innerHTML = `
+                            <div class="card" style="width: 18rem;">
+                                <img src="${product.pic}" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <p class="card-text">${product.description}</p>
+                                    <p class="card-text">${product.price}</p>
+                                    <button class="btn btn-primary" onclick="addToCart('${product._id}')">Add to cart</button>
+                                    <button class="btn btn-info" onclick="showProductDetails('${product._id}')">
+                                        More details
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                            productsContainer.appendChild(productElement);
+                        });
+                        if (currentPage >= totalPages) {
+                            document.getElementById('load-more-btn').style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.log('Error loading more products:', error));
+            }
+            document.getElementById('load-more-btn').addEventListener('click', loadMoreProducts);
+
+            const showProductDetails = (productId) => {
+                fetch(`/product/getOne/${productId}`)
+                    .then((res) => res.json())
+                    .then((product) => {
+                        document.getElementById('modalProductName').innerText = product.name;
+                        document.getElementById('modalProductDescription').innerText = product.description;
+                        document.getElementById('modalProductPrice').innerText = `Price: ${product.price}`;
+                        document.getElementById('modalProductImage').src = product.pic;
+                        new bootstrap.Modal(document.getElementById('productModal')).show();
+                    })
+                    .catch((err) => {
+                        console.log("error occurred in fetching product details", err)
+                    })
+            }
+
+
+        </script>
+</body>
+
+</html>
