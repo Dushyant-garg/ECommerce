@@ -204,9 +204,6 @@ router.get("/logout", (req, res) => {
     try {
         req.session.isLoggedIn = false;
         req.session.userId = null;
-        console.log(req.session)
-        // console.log(req.session.isLoggedIn)
-        // res.redirect("/auth/signin")
         res.status(200).send("logout successful")
         
     } catch (error) {

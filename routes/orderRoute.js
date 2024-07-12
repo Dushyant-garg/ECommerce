@@ -24,12 +24,14 @@ router.get('/orders', verifyUser, async(req,res)=>{
         let orders;
         if(user.role === "seller"){
             orders = await Order.find({seller:req.session.userId})
+            .sort({createdAt:-1})
             .populate("product")
             .populate("buyer","username")
             .populate("seller")
         }
         else{
             orders = await Order.find({buyer:req.session.userId})
+            .sort({createdAt:-1})
             .populate("product")
             .populate("buyer","username")
             .populate("seller")

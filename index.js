@@ -66,6 +66,7 @@ app.get("/products", verifyUser, async (req, res) => {
     const limit = 3
     try {
         const products = await Product.find()
+            .sort({createdAt:-1})
             .skip((page - 1) * limit)
             .limit(limit)
 
