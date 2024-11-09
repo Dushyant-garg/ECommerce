@@ -32,13 +32,13 @@ router.post("/signup", async (req, res) => {
             const transporter = nodemailer.createTransport({
                 service: 'Gmail',
                 auth: {
-                    user: 'dushyantgarg37@gmail.com',
-                    pass: 'rjbg mcaf tagb htue' 
+                    user: 'process.env.EMAIL',
+                    pass: 'process.env.PASS' 
                 }
             });
 
             const mailOptions = {
-                from: 'dushyantgarg37@gmail.com',
+                from: 'process.env.EMAIL',
                 to: newUser.email,
                 subject: 'Email Verification',
                 text: `Please verify your email by clicking the link: \nhttp://${req.headers.host}/auth/verify-email?token=${verificationToken}`
@@ -134,13 +134,13 @@ router.post('/forgot-password', async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
-                user: 'dushyantgarg37@gmail.com',
-                pass: 'rjbg mcaf tagb htue'
+                user: 'process.env.EMAIL',
+                pass: 'process.env.PASS'
             }
         });
 
         const mailOptions = {
-            from: 'dushyantgarg37@gmail.com',
+            from: 'process.env.EMAIL',
             to: user.email,
             subject: 'Password Reset',
             text: `Please reset your password by clicking the link: \nhttp://${req.headers.host}/auth/reset-password?token=${resetToken}`
